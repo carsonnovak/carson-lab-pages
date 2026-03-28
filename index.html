@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carson's Lab Pages</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: rgba(255,255,255,0.08);
+    --border-hover: rgba(255,255,255,0.16);
+    --text: #e6edf3;
+    --muted: #7d8590;
+    --accent: #3fb950;
+    --accent-dim: rgba(63,185,80,0.15);
+    --accent-border: rgba(63,185,80,0.3);
+    --blue: #58a6ff;
+    --blue-dim: rgba(88,166,255,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
+  /* ── Header ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 40px 32px 32px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .header-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 10px;
+  }
+  .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--accent-dim);
+    border: 1px solid var(--accent-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+  .repo-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: var(--blue);
+    text-decoration: none;
+    padding: 4px 10px;
+    border-radius: 6px;
+    background: var(--blue-dim);
+    border: 1px solid rgba(88,166,255,0.2);
+    transition: background 0.15s;
+  }
+  .repo-link:hover { background: rgba(88,166,255,0.2); }
+
+  /* ── Main ── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 32px 0;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .section-title {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+  }
+  .file-count {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  /* ── Grid ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    text-decoration: none;
+    display: block;
+    transition: border-color 0.15s, background 0.15s, transform 0.1s;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .card:hover {
+    border-color: var(--border-hover);
+    background: var(--surface2);
+    transform: translateY(-1px);
+  }
+  .card:hover::before { opacity: 1; }
+
+  .card-icon {
+    font-size: 20px;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .card-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-filename {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .card-arrow {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    font-size: 14px;
+    color: var(--muted);
+    opacity: 0;
+    transition: opacity 0.15s, transform 0.15s;
+  }
+  .card:hover .card-arrow { opacity: 1; transform: translate(2px, -2px); }
+
+  /* ── States ── */
+  .loading-state, .empty-state, .error-state {
+    grid-column: 1 / -1;
+    padding: 48px 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .pulse {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-right: 8px;
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  /* ── Footer ── */
+  footer {
+    max-width: 900px;
+    margin: 40px auto 0;
+    padding: 0 32px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .footer-text {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+  .last-updated {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  @media (max-width: 520px) {
+    header, main, footer { padding-left: 16px; padding-right: 16px; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-top">
+    <div class="avatar">⚗️</div>
+    <div>
+      <h1>Carson's Lab Pages</h1>
+    </div>
+  </div>
+  <p class="subtitle">HTML projects built with Claude — live on GitHub Pages. Updated automatically as new files are pushed.</p>
+  <a class="repo-link" href="https://github.com/carsonnovak/carson-lab-pages" target="_blank">
+    ⎇ &nbsp;carsonnovak/carson-lab-pages
+  </a>
+</header>
+
+<main>
+  <div class="section-header">
+    <span class="section-title">Projects</span>
+    <span class="file-count" id="file-count"></span>
+  </div>
+  <div class="grid" id="grid">
+    <div class="loading-state"><span class="pulse"></span>Loading projects from GitHub...</div>
+  </div>
+</main>
+
+<footer>
+  <span class="footer-text">Deployed via GitHub Pages</span>
+  <span class="last-updated" id="last-updated"></span>
+</footer>
+
+<script>
+const OWNER = 'carsonnovak';
+const REPO = 'carson-lab-pages';
+const BASE_URL = `https://${OWNER}.github.io/${REPO}`;
+
+const ICONS = {
+  'cvnp': '🥾',
+  'weather': '🌤️',
+  'todo': '✅',
+  'packing': '🎒',
+  'list': '📋',
+  'map': '🗺️',
+  'dash': '📊',
+  'dashboard': '📊',
+  'tracker': '📈',
+  'recipe': '🍳',
+  'travel': '✈️',
+  'home': '🏠',
+  'lab': '⚗️',
+  'docker': '🐳',
+  'network': '🌐',
+  'monitor': '🖥️',
+};
+
+function getIcon(filename) {
+  const lower = filename.toLowerCase();
+  for (const [key, icon] of Object.entries(ICONS)) {
+    if (lower.includes(key)) return icon;
+  }
+  return '📄';
+}
+
+function toTitle(filename) {
+  return filename
+    .replace(/\.html?$/i, '')
+    .replace(/[-_]/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase());
+}
+
+async function loadFiles() {
+  const grid = document.getElementById('grid');
+  try {
+    const res = await fetch(`https://api.github.com/repos/${OWNER}/${REPO}/contents/`);
+    if (!res.ok) throw new Error(`GitHub API returned ${res.status}`);
+    const files = await res.json();
+
+    const htmlFiles = files.filter(f =>
+      f.type === 'file' &&
+      f.name.endsWith('.html') &&
+      f.name !== 'index.html'
+    );
+
+    document.getElementById('file-count').textContent = `${htmlFiles.length} project${htmlFiles.length !== 1 ? 's' : ''}`;
+    document.getElementById('last-updated').textContent = `Fetched ${new Date().toLocaleTimeString()}`;
+
+    if (htmlFiles.length === 0) {
+      grid.innerHTML = `<div class="empty-state">No projects yet — push your first HTML file to get started.</div>`;
+      return;
+    }
+
+    grid.innerHTML = htmlFiles.map(f => `
+      <a class="card" href="${BASE_URL}/${f.name}" target="_blank">
+        <span class="card-icon">${getIcon(f.name)}</span>
+        <div class="card-name">${toTitle(f.name)}</div>
+        <div class="card-filename">${f.name}</div>
+        <span class="card-arrow">↗</span>
+      </a>
+    `).join('');
+
+  } catch (err) {
+    grid.innerHTML = `<div class="error-state">Couldn't load projects: ${err.message}<br><br>
+      <a href="https://github.com/${OWNER}/${REPO}" style="color:var(--blue)">Browse the repo directly →</a></div>`;
+  }
+}
+
+loadFiles();
+</script>
+</body>
+</html>
