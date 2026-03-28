@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CVNP Trip — April 2–5, 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #2d4a3e;
+    --moss: #4a7c59;
+    --sage: #8aab8e;
+    --stone: #c8bfaf;
+    --bark: #7a5c44;
+    --cream: #f5f0e8;
+    --paper: #faf8f4;
+    --ink: #1e1e1e;
+    --muted: #7a776f;
+    --accent: #c45e2a;
+    --accent-light: #f0d4c2;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--paper); color: var(--ink); font-family: 'DM Sans', sans-serif; font-weight: 300; min-height: 100vh; padding: 0 0 80px; }
+  .hero { background: var(--forest); padding: 56px 32px 40px; position: relative; overflow: hidden; }
+  .hero::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 40px, rgba(255,255,255,0.02) 40px, rgba(255,255,255,0.02) 41px); }
+  .hero-inner { max-width: 760px; margin: 0 auto; position: relative; }
+  .hero-eyebrow { font-family: 'DM Sans', sans-serif; font-weight: 500; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--sage); margin-bottom: 12px; }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 5vw, 44px); font-weight: 400; color: var(--cream); line-height: 1.15; margin-bottom: 8px; }
+  .hero h1 em { font-style: italic; color: var(--sage); }
+  .hero-sub { font-size: 14px; color: var(--stone); font-weight: 300; margin-top: 12px; }
+  .progress-wrap { background: var(--forest); padding: 0 32px 32px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+  .progress-inner { max-width: 760px; margin: 0 auto; }
+  .progress-stats { display: flex; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+  .progress-num { font-family: 'Playfair Display', serif; font-size: 32px; color: var(--cream); font-weight: 400; }
+  .progress-label { font-size: 13px; color: var(--stone); }
+  .progress-track { height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--sage); border-radius: 2px; transition: width 0.4s cubic-bezier(0.4,0,0.2,1); width: 0%; }
+  .main { max-width: 760px; margin: 0 auto; padding: 32px 32px 0; }
+  .section { margin-bottom: 8px; }
+  .section-toggle { width: 100%; background: none; border: none; cursor: pointer; padding: 18px 0 14px; display: flex; align-items: center; gap: 12px; border-top: 1px solid rgba(0,0,0,0.08); text-align: left; }
+  .section:first-child .section-toggle { border-top: none; }
+  .section-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 15px; flex-shrink: 0; }
+  .section-meta { flex: 1; }
+  .section-name { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 400; color: var(--ink); display: block; line-height: 1.3; }
+  .section-progress-text { font-size: 12px; color: var(--muted); margin-top: 2px; display: block; }
+  .section-chevron { font-size: 11px; color: var(--muted); transition: transform 0.25s; flex-shrink: 0; opacity: 0.6; }
+  .section.open .section-chevron { transform: rotate(180deg); }
+  .section-body { display: none; padding-bottom: 12px; }
+  .section.open .section-body { display: block; }
+  .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 6px; margin-bottom: 8px; }
+  .item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border-radius: 8px; cursor: pointer; border: 1px solid transparent; transition: background 0.15s, border-color 0.15s, opacity 0.2s; background: white; border-color: rgba(0,0,0,0.06); }
+  .item:hover { background: var(--cream); border-color: rgba(0,0,0,0.12); }
+  .item.checked { opacity: 0.42; }
+  .item.checked .item-name { text-decoration: line-through; }
+  .item-box { width: 17px; height: 17px; border-radius: 4px; border: 1.5px solid var(--stone); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; transition: background 0.15s, border-color 0.15s; }
+  .item.checked .item-box { background: var(--moss); border-color: var(--moss); }
+  .item-box svg { display: none; }
+  .item.checked .item-box svg { display: block; }
+  .item-text { flex: 1; min-width: 0; }
+  .item-name { font-size: 13px; color: var(--ink); line-height: 1.4; font-weight: 400; }
+  .item-tip { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.35; }
+  .item-badge { font-size: 10px; padding: 1px 6px; border-radius: 10px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; font-weight: 500; align-self: flex-start; }
+  .badge-forget { background: #fef3c7; color: #92400e; }
+  .badge-weather { background: #dbeafe; color: #1e40af; }
+  .badge-custom { background: var(--accent-light); color: var(--accent); }
+  .add-item-row { display: flex; gap: 8px; margin-top: 8px; }
+  .add-item-input { flex: 1; padding: 9px 12px; border: 1px dashed var(--stone); border-radius: 8px; background: transparent; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--ink); outline: none; transition: border-color 0.15s; }
+  .add-item-input::placeholder { color: var(--stone); }
+  .add-item-input:focus { border-color: var(--moss); border-style: solid; }
+  .add-item-btn { padding: 9px 16px; background: var(--forest); color: var(--cream); border: none; border-radius: 8px; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; transition: background 0.15s; white-space: nowrap; }
+  .add-item-btn:hover { background: var(--moss); }
+  .footer-bar { max-width: 760px; margin: 32px auto 0; padding: 0 32px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .footer-btn { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 400; padding: 8px 16px; border-radius: 6px; cursor: pointer; border: 1px solid rgba(0,0,0,0.12); background: white; color: var(--muted); transition: background 0.15s; }
+  .footer-btn:hover { background: var(--cream); color: var(--ink); }
+  .footer-note { font-size: 11px; color: var(--stone); margin-left: auto; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(60px); background: var(--forest); color: var(--cream); padding: 10px 20px; border-radius: 8px; font-size: 13px; transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); pointer-events: none; white-space: nowrap; z-index: 100; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  @media (max-width: 520px) { .hero, .progress-wrap { padding-left: 20px; padding-right: 20px; } .main { padding: 24px 20px 0; } .footer-bar { padding: 0 20px; } .items-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-inner">
+    <p class="hero-eyebrow">Cuyahoga Valley National Park &nbsp;·&nbsp; Ohio</p>
+    <h1>Pack List<br><em>April 2 – 5, 2026</em></h1>
+    <p class="hero-sub">Two friends, one cottage, a few good trails — and everything you need to not forget anything.</p>
+  </div>
+</div>
+<div class="progress-wrap">
+  <div class="progress-inner">
+    <div class="progress-stats">
+      <span class="progress-num" id="prog-num">0</span>
+      <span class="progress-label">of <span id="prog-total">0</span> items packed</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+</div>
+<div class="main" id="sections-root"></div>
+<div class="footer-bar">
+  <button class="footer-btn" onclick="resetAll()">Reset all checks</button>
+  <button class="footer-btn" onclick="expandAll()">Expand all</button>
+  <button class="footer-btn" onclick="collapseAll()">Collapse all</button>
+  <span class="footer-note">Progress saves automatically in your browser</span>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const STORAGE_KEY = 'cvnp-packing-2026';
+const SECTIONS = [
+  { id: 'trail', icon: '🥾', color: '#e8f0eb', title: 'Hiking & Trail Gear', items: [
+    { id: 't1', name: 'Hiking boots or trail shoes', tip: 'Break them in before the trip if they\'re new', badge: null },
+    { id: 't2', name: 'Wool or synthetic hiking socks', tip: '2–3 pairs minimum — cotton holds moisture and destroys feet', badge: 'forget' },
+    { id: 't3', name: 'Trekking poles', tip: 'Optional but very useful on muddy spring trails', badge: null },
+    { id: 't4', name: 'Daypack (20–30L)', tip: 'Big enough for layers, water, and snacks for a full day out', badge: null },
+    { id: 't5', name: 'Hydration bladder or water bottles', tip: 'At least 2L capacity for longer hikes', badge: null },
+    { id: 't6', name: 'Trail map or downloaded offline map', tip: 'Cell service can be spotty in the park — download nps.gov/cuva ahead of time', badge: 'forget' },
+    { id: 't7', name: 'Gaiters', tip: 'Early April = muddy trails — these keep your shoes and lower legs dry', badge: 'forget' },
+  ]},
+  { id: 'clothing', icon: '🧥', color: '#edf0f5', title: 'Clothing — Layering System', items: [
+    { id: 'c1', name: 'Moisture-wicking base layers', tip: '1–2 tops, avoid cotton entirely', badge: 'weather' },
+    { id: 'c2', name: 'Fleece or midlayer', tip: 'Highs in the low 50s–60s, mornings are cold', badge: 'weather' },
+    { id: 'c3', name: 'Waterproof rain jacket', tip: 'Overcast ~54% of the time in April — this is not optional', badge: 'weather' },
+    { id: 'c4', name: 'Lightweight insulated jacket', tip: 'For cool mornings and evenings on the porch', badge: null },
+    { id: 'c5', name: 'Hiking pants or quick-dry pants', tip: '1–2 pairs — jeans are miserable when wet', badge: null },
+    { id: 'c6', name: 'Casual pants or jeans', tip: 'For the Cleveland day trip', badge: null },
+    { id: 'c7', name: 'Warm hat and gloves', tip: 'Morning temps can dip into the 40s at the trailhead', badge: 'weather' },
+    { id: 'c8', name: 'Casual tops for evenings', tip: '2–3 for dinners and exploring Akron/Cleveland', badge: null },
+    { id: 'c9', name: 'Comfortable walking shoes', tip: 'Separate from hiking boots for city days', badge: null },
+    { id: 'c10', name: 'Underwear + socks', tip: '3–4 days worth, pack one extra just in case', badge: null },
+  ]},
+  { id: 'cottage', icon: '🏡', color: '#f5efeb', title: 'Cottage & Camp Comfort', items: [
+    { id: 'co1', name: 'Headlamp + extra batteries', tip: 'Wooded cottage — great for evening trail walks after dark', badge: 'forget' },
+    { id: 'co2', name: 'Reusable grocery bags', tip: 'For West Side Market hauls or grocery runs', badge: null },
+    { id: 'co3', name: 'Small dry bag', tip: 'Protects your phone and wallet on wet hikes', badge: 'forget' },
+    { id: 'co4', name: 'Power bank / portable charger', tip: 'Long trails and drives will drain your phone fast', badge: null },
+    { id: 'co5', name: 'Bluetooth speaker', tip: 'For evenings by the fireplace or on the back porch', badge: null },
+    { id: 'co6', name: 'Bug spray', tip: 'April is the start of tick season in Ohio — don\'t skip it', badge: 'forget' },
+    { id: 'co7', name: 'Sunscreen', tip: 'Easy to forget on overcast days — UV still hits', badge: null },
+    { id: 'co8', name: 'Firestarter / lighter', tip: 'For the gas fireplace and evenings on the porch', badge: null },
+  ]},
+  { id: 'health', icon: '🩹', color: '#fdf0ee', title: 'Health & First Aid', items: [
+    { id: 'h1', name: 'Blister kit', tip: 'Moleskin + bandages — any new boots will produce blisters', badge: 'forget' },
+    { id: 'h2', name: 'Ibuprofen / pain reliever', tip: 'Day 2 legs will be sore after a solid first day', badge: null },
+    { id: 'h3', name: 'Antihistamines', tip: 'Spring allergies + wooded area is a strong combo', badge: 'forget' },
+    { id: 'h4', name: 'Tick removal tool', tip: 'Tick season starts in April in Ohio — worth having', badge: 'forget' },
+    { id: 'h5', name: 'Muscle rub or recovery balm', tip: 'Legs will thank you on night 1', badge: 'forget' },
+    { id: 'h6', name: 'Personal prescriptions', tip: 'Pack a couple extra days worth in case of delays', badge: null },
+    { id: 'h7', name: 'Hand sanitizer + wet wipes', tip: 'Trail essentials — bathrooms are not always nearby', badge: null },
+    { id: 'h8', name: 'Small first aid kit', tip: 'Bandages, antiseptic, medical tape', badge: null },
+  ]},
+  { id: 'food', icon: '🍳', color: '#f5f3e8', title: 'Food & Snacks', items: [
+    { id: 'f1', name: 'Trail snacks', tip: 'Bars, nuts, jerky, dried fruit — enough for full days on the trail', badge: null },
+    { id: 'f2', name: 'Coffee + supplies', tip: 'Cottage has a kitchen — morning coffee in a wooded ravine is mandatory', badge: null },
+    { id: 'f3', name: 'Easy breakfast foods', tip: 'Eggs, bread, oats — saves money vs eating out every single meal', badge: null },
+    { id: 'f4', name: 'Insulated thermos', tip: 'Hot coffee at the Brandywine Falls trailhead is a vibe', badge: 'forget' },
+    { id: 'f5', name: 'Reusable utensils and a bowl', tip: 'For quick cottage meals before and after hikes', badge: null },
+  ]},
+  { id: 'tech', icon: '📱', color: '#eef0f5', title: 'Tech & Logistics', items: [
+    { id: 'te1', name: 'Phone charger', tip: 'Obviously', badge: null },
+    { id: 'te2', name: 'Car charger', tip: 'Long drives between cottage, park, and Cleveland', badge: null },
+    { id: 'te3', name: 'Airbnb confirmation + host contact', tip: 'Screenshot it — no guarantee of cell service at the cottage', badge: 'forget' },
+    { id: 'te4', name: 'CVNP park map downloaded', tip: 'nps.gov/cuva — download the offline map before you leave home', badge: 'forget' },
+    { id: 'te5', name: 'Camera or extra phone storage', tip: 'Brandywine Falls in early spring is extremely photogenic', badge: null },
+    { id: 'te6', name: 'Earbuds / headphones', tip: 'For the drives and cottage downtime', badge: null },
+  ]},
+  { id: 'toiletries', icon: '🪥', color: '#f0f5ee', title: 'Toiletries & Personal', items: [
+    { id: 'p1', name: 'Shampoo, conditioner, body wash', tip: 'Confirm what the cottage provides first', badge: null },
+    { id: 'p2', name: 'Toothbrush + toothpaste', tip: null, badge: null },
+    { id: 'p3', name: 'Deodorant', tip: null, badge: null },
+    { id: 'p4', name: 'Lip balm with SPF', tip: 'Wind on exposed trails dries lips fast', badge: 'forget' },
+    { id: 'p5', name: 'Face wash + moisturizer', tip: null, badge: null },
+    { id: 'p6', name: 'Towels', tip: 'Confirm if provided — most cottages include them', badge: null },
+    { id: 'p7', name: 'Hair care items', tip: null, badge: null },
+    { id: 'p8', name: 'Contact lenses / glasses + backup pair', tip: null, badge: 'forget' },
+  ]}
+];
+function loadState() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || { checked: {}, custom: {} }; } catch { return { checked: {}, custom: {} }; } }
+function saveState(state) { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+let state = loadState();
+function allItems() { let all = []; SECTIONS.forEach(sec => { all = all.concat(sec.items.map(i => ({ ...i, sectionId: sec.id }))); const customItems = (state.custom[sec.id] || []).map(i => ({ ...i, sectionId: sec.id, badge: 'custom' })); all = all.concat(customItems); }); return all; }
+function updateProgress() { const items = allItems(); const total = items.length; const checked = items.filter(i => state.checked[i.id]).length; document.getElementById('prog-num').textContent = checked; document.getElementById('prog-total').textContent = total; document.getElementById('prog-fill').style.width = total ? Math.round((checked / total) * 100) + '%' : '0%'; }
+function updateSectionProgress(sectionId) { const sec = SECTIONS.find(s => s.id === sectionId); const items = [...sec.items, ...(state.custom[sectionId] || [])]; const checked = items.filter(i => state.checked[i.id]).length; const el = document.getElementById('sec-prog-' + sectionId); if (el) el.textContent = checked === items.length && items.length > 0 ? 'All packed ✓' : `${checked} of ${items.length} packed`; }
+function toggleItem(id) { state.checked[id] = !state.checked[id]; saveState(state); const el = document.getElementById('item-' + id); if (el) el.classList.toggle('checked', state.checked[id]); updateProgress(); const sectionId = el?.dataset.section; if (sectionId) updateSectionProgress(sectionId); }
+function renderItem(item, sectionId) { const checked = state.checked[item.id] ? 'checked' : ''; const badgeHtml = item.badge === 'forget' ? '<span class="item-badge badge-forget">don\'t forget</span>' : item.badge === 'weather' ? '<span class="item-badge badge-weather">weather</span>' : item.badge === 'custom' ? '<span class="item-badge badge-custom">added by you</span>' : ''; return `<div class="item ${checked}" id="item-${item.id}" data-section="${sectionId}" onclick="toggleItem('${item.id}')"><div class="item-box"><svg width="9" height="7" viewBox="0 0 9 7" fill="none"><path d="M1 3L3.5 5.5L8 1" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="item-text"><span class="item-name">${item.name}</span>${item.tip ? `<span class="item-tip">${item.tip}</span>` : ''}</div>${badgeHtml}</div>`; }
+function renderCustomItems(sectionId) { return (state.custom[sectionId] || []).map(item => renderItem(item, sectionId)).join(''); }
+function addCustomItem(sectionId) { const input = document.getElementById('add-input-' + sectionId); const val = input.value.trim(); if (!val) return; if (!state.custom[sectionId]) state.custom[sectionId] = []; const id = 'custom-' + sectionId + '-' + Date.now(); state.custom[sectionId].push({ id, name: val, tip: null, badge: 'custom' }); saveState(state); input.value = ''; const grid = document.getElementById('grid-' + sectionId); if (grid) { const sec = SECTIONS.find(s => s.id === sectionId); grid.innerHTML = sec.items.map(i => renderItem(i, sectionId)).join('') + renderCustomItems(sectionId); } updateProgress(); updateSectionProgress(sectionId); showToast('Item added and saved!'); }
+function renderSections() { const root = document.getElementById('sections-root'); root.innerHTML = SECTIONS.map(sec => `<div class="section open" id="sec-${sec.id}"><button class="section-toggle" onclick="toggleSection('${sec.id}')"><div class="section-icon" style="background:${sec.color}">${sec.icon}</div><div class="section-meta"><span class="section-name">${sec.title}</span><span class="section-progress-text" id="sec-prog-${sec.id}">0 of ${sec.items.length + (state.custom[sec.id]||[]).length} packed</span></div><span class="section-chevron">▼</span></button><div class="section-body"><div class="items-grid" id="grid-${sec.id}">${sec.items.map(i => renderItem(i, sec.id)).join('')}${renderCustomItems(sec.id)}</div><div class="add-item-row"><input class="add-item-input" id="add-input-${sec.id}" type="text" placeholder="Add an item to ${sec.title.toLowerCase()}…" onkeydown="if(event.key==='Enter') addCustomItem('${sec.id}')"><button class="add-item-btn" onclick="addCustomItem('${sec.id}')">+ Add</button></div></div></div>`).join(''); SECTIONS.forEach(sec => updateSectionProgress(sec.id)); }
+function toggleSection(id) { const el = document.getElementById('sec-' + id); el.classList.toggle('open'); }
+function resetAll() { if (!confirm('Reset all checked items? Your custom added items will stay.')) return; state.checked = {}; saveState(state); document.querySelectorAll('.item.checked').forEach(el => el.classList.remove('checked')); updateProgress(); SECTIONS.forEach(sec => updateSectionProgress(sec.id)); showToast('All items unchecked'); }
+function expandAll() { document.querySelectorAll('.section').forEach(el => el.classList.add('open')); }
+function collapseAll() { document.querySelectorAll('.section').forEach(el => el.classList.remove('open')); }
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200); }
+renderSections();
+updateProgress();
+</script>
+</body>
+</html>
